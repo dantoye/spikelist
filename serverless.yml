@@ -1,0 +1,39 @@
+service: spikelist
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: us-west-2
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./spikelist
+
+functions:
+  get_levels:
+    handler: spikelist
+    environment:
+      HANDLER_NAME: get_levels
+    events:
+      - http:
+          method: get
+          path: /
+resources:
+  Resources:
+    levels:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: levels
+        AttributeDefinitions:
+          - AttributeName: level_id
+            AttributeType: S
+          - AttributeName: level_maker
+            AttributeType: S
+        KeySchema:
+          - AttributeName: level_id
+            KeyType: HASH
+          - AttributeName: level_maker
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
