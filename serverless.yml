@@ -12,14 +12,31 @@ package:
    - ./spikelist
 
 functions:
-  get_levels:
+  rate:
     handler: spikelist
     environment:
-      HANDLER_NAME: get_levels
+      HANDLER_NAME: rate
     events:
       - http:
           method: get
-          path: /
+          path: /rate
+  register:
+    handler: spikelist
+    environment:
+      HANDLER_NAME: register
+    events:
+      - http:
+          method: get
+          path: /register
+  upload:
+    handler: spikelist
+    environment:
+      HANDLER_NAME: upload
+    events:
+      - http:
+          method: get
+          path: /upload
+
 resources:
   Resources:
     levels:
@@ -35,5 +52,42 @@ resources:
           - AttributeName: level_id
             KeyType: HASH
           - AttributeName: level_maker
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+    makers:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: makers
+        AttributeDefinitions:
+          - AttributeName: maker_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: maker_id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    nicknames:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: nicknames
+        AttributeDefinitions:
+          - AttributeName: nickname
+            AttributeType: S
+        KeySchema:
+          - AttributeName: nickname
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    maker_levels:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: maker_levels
+        AttributeDefinitions:
+          - AttributeName: level_id
+            AttributeType: S
+          - AttributeName: maker_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: level_id
+            KeyType: HASH
+          - AttributeName: maker_id
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
